@@ -1,18 +1,3 @@
-############################################
-#
-# Now, imagine you are given data from a website that
-# has people's CVs. The data comes
-# as a list of dictionaries and each
-# dictionary looks like this:
-#
-# { 'user': 'george', 'jobs': ['bar', 'baz', 'qux']}
-# e.g. [{'user': 'john', 'jobs': ['analyst', 'engineer']},
-#       {'user': 'jane', 'jobs': ['finance', 'software']}]
-# we will refer to this as a "CV".
-#
-
-
-
 #
 # 4)
 # Create a function called "has_experience_as"
@@ -23,7 +8,15 @@
 # The function should return a list of strings
 # representing the usernames of every user that
 # has worked as job_title.
-
+def has_experience_as(input_list,job_title):
+    list = []
+    for temp in input_list:
+        job_list = temp['jobs']
+        for job in job_list:
+            if job == job_title:
+                list.append(temp['user'])
+                break
+    return list
 
 
 #
@@ -34,7 +27,16 @@
 # keys are the job titles and the values
 # are the number of users that have done
 # that job.
-
+def job_counts(input_list):
+    map = {}
+    for temp in input_list:
+        job_list = temp['jobs']
+        for job in job_list:
+            if job in map.keys():
+                map[job] = map[job]+1
+            else:
+                map[job] = 1
+    return map;
 
 
 #
@@ -51,3 +53,12 @@
 # HINT: You can use the method '.items' on
 # dictionaries to iterate over them like a
 # list of tuples.
+def most_popular_job(input_list):
+    jon_name = ""
+    job_num = 0
+    job_map = job_counts(input_list)
+    for item in job_map.items():
+        if item[1] > job_num:
+            job_num = item[1]
+            jon_name = item[0]
+    return jon_name,job_num

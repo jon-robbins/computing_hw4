@@ -1,7 +1,3 @@
-
-
-
-
 ##############
 
 # Now imagine you have a certain data structure that
@@ -23,7 +19,10 @@
 #
 # The function should return the total number of cases
 # registered so far in that country
-
+def total_registered_cases(raw_data,country_name):
+    for item in raw_data.items():
+        if item[0] == country_name:
+            return sum(item[1])
 
 # 8)
 # Create a function called "total_registered_cases_per_country"
@@ -34,7 +33,11 @@
 # per each country and as value the total number of cases
 # registered so far that the country had
 #
-
+def total_registered_cases_per_country(raw_data):
+    map = {}
+    for item in raw_data.items():
+        map[item[0]] = sum(item[1])
+    return map
 
 # 9)
 # Create a function called "country_with_most_cases"
@@ -43,18 +46,11 @@
 #
 # The function should return the country with the
 # greatest total amount of cases
-
-
-
-###############
-# Use the data in covid.csv for this exercise
-#
-# 10) In a separate file, write a piece of code that
-# loads the covid.csv file and prints the list of countries
-#  and the total average of death/confirmed among those countries
-# for those countries that have more than 500, 1000 and 5000
-# active cases respectively.
-# Follow DRY principles in order to complete this exercise.
-#
-#
-# #
+def country_with_most_cases(raw_data):
+    country = ""
+    cases = 0
+    for item in raw_data.items():
+        if  sum(item[1]) > cases :
+            cases = sum(item[1])
+            country = item[0]
+    return country,cases
