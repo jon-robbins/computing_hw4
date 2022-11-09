@@ -10,43 +10,49 @@
 #
 #
 # #
-import pandas as pd
-path = ''
-df =  pd.read_csv(path + "covid.csv", sep = ',')
-df.head()
-Deaths500_total = 0
-Deaths500_count = 0
-Deaths1000_total = 0
-Deaths1000_count = 0
-Deaths5000_total = 0
-Deaths5000_count = 0
-Confirmed500_total = 0
-Confirmed500_count = 0
-Confirmed1000_total = 0
-Confirmed1000_count = 0
-Confirmed5000_total = 0
-Confirmed5000_count = 0
-for row in df.iterrows():
-    print(row[1]['Country'])
-    if row[1]['Active'] > 500:
-        Deaths500_total = Deaths500_total + row[1]['Deaths']
-        Deaths500_count = Deaths500_count + 1
-        Confirmed500_total = Confirmed500_total + row[1]['Confirmed']
-        Confirmed500_count = Confirmed500_count + 1
-    if row[1]['Active'] > 1000:
-        Deaths1000_total = Deaths1000_total + row[1]['Deaths']
-        Deaths1000_count = Deaths1000_count + 1
-        Confirmed1000_total = Confirmed1000_total + row[1]['Confirmed']
-        Confirmed1000_count = Confirmed1000_count + 1
-    if row[1]['Active'] > 5000:
-        Deaths5000_total = Deaths5000_total + row[1]['Deaths']
-        Deaths5000_count = Deaths5000_count + 1
-        Confirmed5000_total = Confirmed5000_total + row[1]['Confirmed']
-        Confirmed5000_count = Confirmed5000_count + 1
-print("average of death among those countries that have more than 500 active cases is :"+str(Deaths500_total/Deaths500_count))
-print("average of confirmed among those countries that have more than 500 active cases is :"+str(Confirmed500_total/Confirmed500_count))
-print("average of death among those countries that have more than 1000 active cases is :"+str(Deaths1000_total/Deaths1000_count))
-print("average of confirmed among those countries that have more than 1000 active cases is :"+str(Confirmed1000_total/Confirmed1000_count))
-print("average of death among those countries that have more than 5000 active cases is :"+str(Deaths5000_total/Deaths5000_count))
-print("average of confirmed among those countries that have more than 5000 active cases is :"+str(Confirmed5000_total/Confirmed5000_count))
 
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('/Users/jon/Documents/DSDM/github/covid.csv')
+
+
+# I'm not sure I understand what's being asked here. I thinnk it's asking for two functions: 1. a list of countries,
+# and 2. a list of the average of deaths/confirmed cases for four groups of countries: Ones that have
+# <=500 cases, ones that have >500<=1000, >1000<=5000, and >5000.
+
+# List of all countries
+countries = list(df['Country'])
+
+# total average of death/confirmed among those countries
+# for those countries that have more than 500, 1000 and 5000
+# active cases respectively.
+
+# first create the categories
+df['category'] = np.where(df['Active'] > 5000, '>5000', \
+                 np.where(df['Active'] > 1000, '>1000<=5000', \
+                 np.where(df['Active'] > 500, '>500', '<=500')))
+# Second create the aggregate table
+df_summary = df.groupby('category') \
+    .agg({'Deaths': 'mean', 'Confirmed': 'mean'}) \
+    .rename(columns={'Deaths': 'Average Deaths', 'Confirmed': 'Average Confirmed'})
+
+# I tried making a dict reader that would read and transform the CSV but it ended up being too inefficient. Leaving for posterity.
+# from csv import DictReader
+# # open file in read mode
+# with open("/Users/jon/Documents/DSDM/github/covid.csv", 'r') as f:
+
+#     #convert csv to dict
+#     dict_reader = DictReader(f)
+#     covid_cases = list(dict_reader)
+#     #get all keys but country name to convert values to int
+#     keys_to_int = list(covid_cases[0].keys())[1:]
+#     for row in covid_cases:
+#         for key in keys_to_int:
+#             row[key] = int(row[key])
+
+
+# for row in covid_cases:
+#     if row['Active'] > 500:
+#         print(row['Country'])
+# %%
